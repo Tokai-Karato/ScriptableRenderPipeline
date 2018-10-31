@@ -277,7 +277,7 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
             }
             else
             {
-                y = EditorGUILayout.FloatField(offsetContent, d.offset.vector3Value.y);
+                y = EditorGUILayout.FloatField(yOffsetContent, d.offset.vector3Value.y);
             }
             if(EditorGUI.EndChangeCheck())
             {

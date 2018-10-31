@@ -22,8 +22,8 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     //override base handle behavior to also translate object along x and z axis and offset the y axis
                     using (new Handles.DrawingScope(Matrix4x4.TRS(Vector3.zero, d.target.transform.rotation, Vector3.one)))
                     {
-                        //contained must be initialized in all case
-                        s.influenceVolume.boxBaseHandle.center = Quaternion.Inverse(d.target.transform.rotation) * d.target.transform.position + d.influenceVolume.offset.vector3Value;
+                        Vector3 origin = Quaternion.Inverse(d.target.transform.rotation) * d.target.transform.position;
+                        s.influenceVolume.boxBaseHandle.center = origin + d.influenceVolume.offset.vector3Value;
                         s.influenceVolume.boxBaseHandle.size = probe.influenceVolume.boxSize;
 
                         EditorGUI.BeginChangeCheck();
@@ -32,9 +32,27 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                         {
                             Undo.RecordObjects(new Object[] { d.target, d.target.transform }, "Modified Planar Base Volume AABB");
 
-                            probe.influenceVolume.boxSize = s.influenceVolume.boxBaseHandle.size;
+                            Vector3 size = s.influenceVolume.boxBaseHandle.size;
 
-                            d.target.influenceVolume.offset = new Vector3(0, s.influenceVolume.boxBaseHandle.center.y, 0);
+                            //clamp offset value
+                            float extend = probe.influenceVolume.boxSize.y * 0.5f;
+                            float offset = s.influenceVolume.boxBaseHandle.center.y;
+                            if(offset < -extend)
+                            {
+                                size.y += -extend + offset;
+                                offset = -extend;
+                            }
+                            if (offset > extend)
+                            {
+                                size.y += offset - extend;
+                                offset = extend;
+                            }
+                            if(size.y < 0)
+                            {
+                                size.y = 0;
+                            }
+                            probe.influenceVolume.boxSize = size;
+                            d.target.influenceVolume.offset = new Vector3(0, offset, 0);
                             Vector3 centerXZ = s.influenceVolume.boxBaseHandle.center;
                             centerXZ.y = 0;
                             Vector3 deltaXZ = d.target.transform.rotation * centerXZ - d.target.transform.position;
@@ -60,16 +78,17 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                                 );
                             if (EditorGUI.EndChangeCheck())
                             {
-                                Vector3 newOffset = Quaternion.Inverse(probe.transform.rotation) * (newCapturePosition - probe.transform.position);
                                 Undo.RecordObjects(new Object[] { probe, probe.transform }, "Translate Influence Position");
                                 Vector3 delta = newCapturePosition - probe.transform.position;
                                 Matrix4x4 oldLocalToWorld = Matrix4x4.TRS(probe.transform.position, probe.transform.rotation, Vector3.one);
-
-                                //call modification to legacy ReflectionProbe
-                                probe.influenceVolume.offset = newOffset;
-
                                 probe.transform.position = newCapturePosition;
-                                d.influenceVolume.offset.vector3Value -= oldLocalToWorld.inverse.MultiplyVector(delta);
+                                Vector3 offset = d.influenceVolume.offset.vector3Value - oldLocalToWorld.inverse.MultiplyVector(delta);
+
+                                //clamp offset value
+                                float extend = probe.influenceVolume.boxSize.y * 0.5f;
+                                offset.y = Mathf.Clamp(offset.y, -extend, extend);
+                                d.influenceVolume.offset.vector3Value = offset;
+
                                 d.influenceVolume.Apply();
                             }
                         }
@@ -131,6 +150,10 @@ namespace UnityEditor.Experimental.Rendering.HDPipeline
                     Vector3.one);
             Gizmos.color = Color.white;
             Gizmos.DrawWireCube(Vector3.zero, new Vector3(d.influenceVolume.boxSize.z, d.influenceVolume.boxSize.x, 0));
+            Color c2 = InfluenceVolumeUI.k_GizmoThemeColorInfluenceNormal.linear;
+            c2.a = 1f;
+            Gizmos.color = c2;
+            Gizmos.DrawLine(Vector3.zero, Vector3.forward);
             Gizmos.color = k_GizmoMirrorPlaneCamera;
             Gizmos.DrawCube(Vector3.zero, new Vector3(d.influenceVolume.boxSize.z, d.influenceVolume.boxSize.x, 0));
 
