@@ -12,22 +12,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - New Shader Graph assets now default to the "Shader Graphs" path in the Shader menu.
 
 ### Fixed
-- Shadow projection is now correct when using the `Unlit` master node with HD Render Pipeline.
+- When you use the `Unlit` master node with the High Definition Render Pipeline, shadow projection is now correct.
 - Removed all direct references to matrices
 - `Matrix Construction` nodes with different `Mode` values now evaluate correctly.
-- `Is Front Face` node now works correctly when connected to `Alpha` and `AlphaThreshold` slots on the `PBR` master node.
+- The `Is Front Face` node now works correctly when it's connected to `Alpha` and `AlphaThreshold` slots on the `PBR` master node.
 - Corrected some instances of incorrect port dimensions on several nodes.
-- `Scene Depth` and `Scene Color` nodes now work in single pass stereo in Lightweight Render Pipeline.
+- `Scene Depth` and `Scene Color` nodes now work in single pass stereo in the Lightweight Render Pipeline.
 - `Channel Mask` node controls are now aligned correctly.
-- In Lightweight Render Pipeline, Pre-multiply surface type now matches the Lit shader. 
-- Fixed an issue where floatfield would be parsed according to OS locale settings with .NET 4.6
+- In LWRP, Pre-multiply surface type now matches the Lit shader. 
+- Floatfield is no longer parsed according to OS locale settings with .NET 4.6.
 
 ## [5.0.0-preview] - 2018-09-28
 ### Fixed
-- In the High Definition Render Pipeline, Shader Graph now supports 4-channel UVs.
-- The Lightweight PBR subshader now generates the correct meta pass.
-- Both PBR subshaders can now generate indirect light from emission.
-- Shader graphs now support the SRP batcher.
+- In HDRP, Shader Graph now supports 4-channel UVs.
+- The LWRP PBR subshader now generates the correct meta pass.
+- Both LWRP And HDRP PBR subshaders can now generate indirect light from emission.
+- Shader Graph now supports the SRP batcher.
 
 ## [4.0.0-preview] - 2018-09-28
 ### Added
@@ -103,4 +103,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Shader Graphs no longer display an error message intended for Sub Graphs when you delete properties.
 - The Shader Graph and Sub Shader Graph file extensions are no longer case-sensitive.
 - The dynamic value slot type now uses the correct decimal separator during HLSL generation.
-- Fixed an issue where Show Generated Code could fail when external editor was not set.
+- Show Generated Code no longer fails if you've not set an external editor.
