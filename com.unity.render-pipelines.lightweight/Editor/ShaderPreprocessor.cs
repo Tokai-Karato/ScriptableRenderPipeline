@@ -127,6 +127,10 @@ namespace UnityEditor.Experimental.Rendering.LightweightPipeline
                     return true;
             }
 
+            if (compilerData.shaderKeywordSet.IsEnabled(m_SoftShadows) &&
+                compilerData.platformKeywordSet.IsEnabled(BuiltinShaderDefine.UNITY_METAL_SHADOWS_USE_POINT_FILTERING))
+                return true;
+
             return false;
         }
 
