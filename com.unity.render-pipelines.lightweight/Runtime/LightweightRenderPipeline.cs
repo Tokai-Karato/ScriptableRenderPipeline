@@ -400,12 +400,8 @@ namespace UnityEngine.Experimental.Rendering.LightweightPipeline
 
             shadowData.supportsAdditionalLightShadows = settings.supportsAdditionalLightShadows && additionalLightsCastShadows;
             shadowData.additionalLightsShadowmapWidth = shadowData.additionalLightsShadowmapHeight = settings.additionalLightsShadowmapResolution;
-            shadowData.shadowmapDepthBufferBits = 16;
             shadowData.supportsSoftShadows = settings.supportsSoftShadows && (shadowData.supportsMainLightShadows || shadowData.supportsAdditionalLightShadows);
-
-            bool forceHardShadows = SystemInfo.graphicsDeviceType == GraphicsDeviceType.Metal && GraphicsSettings.HasShaderDefine(Graphics.activeTier, BuiltinShaderDefine.UNITY_METAL_SHADOWS_USE_POINT_FILTERING);
-            if (forceHardShadows)
-                shadowData.supportsSoftShadows = false;
+            shadowData.shadowmapDepthBufferBits = 16;
         }
 
         static void InitializeLightData(PipelineSettings settings, NativeArray<VisibleLight> visibleLights, int mainLightIndex, int maxAdditionalLights,

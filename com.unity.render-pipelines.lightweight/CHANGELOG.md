@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [5.1.0-preview] - 2018-10-18
 ### Fixed
-- Soft shadows now respect iOS player setting that forces hard shadows.
+- Shadows now respect iOS player setting that forces hard shadows.
 
 ## [5.0.0-preview] - 2018-09-28
 ### Added
